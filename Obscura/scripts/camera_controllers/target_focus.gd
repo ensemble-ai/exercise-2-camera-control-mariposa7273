@@ -1,14 +1,19 @@
-class_name PositionLeash
+class_name TargetFocus
 extends CameraControllerBase
 
-@export var follow_speed: float = 30.0
+@export var lead_speed:float = 60.0
+@export var catchup_delay_duration: float = 0.3
 @export var catchup_speed: float = 70.0
 @export var leash_distance: float = 10.0
+var catchup_timer: float = 0.0  
 
+# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	super()
+	global_position = Vector3(target.global_position.x, global_position.y, target.global_position.z)
 
 
+# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if !current:
 		return
@@ -22,15 +27,19 @@ func _process(delta: float) -> void:
 
 	var tpos = Vector3(target.global_position.x, global_position.y, target.global_position.z)
 	var distance = global_position.distance_to(tpos)
+	var lead_pos = tpos + (target.velocity.normalized() * leash_distance)
 	
+	if target.velocity.length() > 0:
+		global_position = global_position.move_toward(lead_pos, lead_speed * delta)
+		catchup_timer = 0.0
+	else:
+		if catchup_timer < catchup_delay_duration:
+			catchup_timer += delta
+		else:
+			global_position = global_position.move_toward(tpos, catchup_speed * delta)
+
 	if distance > leash_distance:
 		global_position = global_position.move_toward(tpos, catchup_speed * delta)
-	else:
-		if distance < 1 and target.velocity.length() == 0:
-			global_position = tpos
-		var direction = (tpos - global_position).normalized()
-		global_position += direction * follow_speed * delta
-
 
 func draw_logic():
 	var mesh_instance := MeshInstance3D.new()

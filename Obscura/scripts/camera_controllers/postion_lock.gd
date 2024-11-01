@@ -2,8 +2,6 @@ class_name PositionLock
 extends CameraControllerBase
 
 var speed: float = 5.0 
-var box_width:float = 10.0
-var box_height:float = 10.0
 var velocity: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
@@ -13,6 +11,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if !current:
 		return
+
 	# toggle doesn't work if I dont recheck it within each camera for some reason
 	if Input.is_action_just_pressed("fire1"):
 		draw_camera_logic = !draw_camera_logic
@@ -26,7 +25,6 @@ func _process(delta: float) -> void:
 	velocity.z = target.velocity.z * speed
 
 	global_position += velocity * delta
-	
 
 
 func draw_logic():

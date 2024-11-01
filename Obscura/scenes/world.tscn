@@ -1,4 +1,6 @@
-[gd_scene load_steps=11 format=4 uid="uid://88du8yjefx8j"]
+
+[gd_scene load_steps=10 format=4 uid="uid://88du8yjefx8j"]
+
 
 [ext_resource type="PackedScene" uid="uid://dtm13sp1jsrwi" path="res://scenes/vessel.tscn" id="1_oaql3"]
 [ext_resource type="Script" path="res://scripts/camera_selector.gd" id="2_qffo5"]
@@ -6,6 +8,11 @@
 [ext_resource type="PackedScene" uid="uid://bu80st6dhcnla" path="res://scenes/controlled_camera.tscn" id="3_ttnp6"]
 [ext_resource type="PackedScene" uid="uid://kafb18nsdh54" path="res://scenes/terrain_manager.tscn" id="4_josyl"]
 [ext_resource type="AudioStream" uid="uid://6tbtl0jk0dlo" path="res://assets/audio/VGMA Challenge - July 16th.wav" id="5_o8tm3"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_gt87k"]
+[ext_resource type="Script" path="res://scripts/camera_controllers/postion_lock.gd" id="7_h20bx"]
+[ext_resource type="Script" path="res://scripts/camera_controllers/auto_scroller.gd" id="8_bdwnq"]
+
 [ext_resource type="Script" path="res://scripts/camera_controllers/postion_lock.gd" id="7_h20bx"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_yeyge"]
@@ -42,7 +49,9 @@ terrain_manager = NodePath("../TerrainManager")
 
 [node name="CameraSelector" type="Node" parent="." node_paths=PackedStringArray("cameras")]
 script = ExtResource("2_qffo5")
-cameras = [NodePath("../PushBoxCamera"), NodePath("../PushBoxCamera2"), NodePath("../PushBoxCamera3"), NodePath("../PositionLockCamera")]
+
+cameras = [NodePath("../PushBoxCamera"), NodePath("../PositionLockCamera"), NodePath("../AutoScrollCamera")]
+
 
 [node name="PushBoxCamera" parent="." node_paths=PackedStringArray("target") instance=ExtResource("3_ttnp6")]
 transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 30, 0)
@@ -81,7 +90,7 @@ transform = Transform3D(0.866025, -0.5, 0, -2.18557e-08, -3.78552e-08, 1, -0.5, 
 shadow_enabled = true
 
 [node name="TerrainManager" parent="." instance=ExtResource("4_josyl")]
-mesh = SubResource("ArrayMesh_yeyge")
+mesh = SubResource("ArrayMesh_gt87k")
 width = 3000
 height = 3000
 amplitude = 15.0
@@ -92,10 +101,10 @@ stream = SubResource("AudioStreamPlaylist_pjjl5")
 autoplay = true
 bus = &"Music"
 
+
 [node name="PositionLockCamera" parent="." node_paths=PackedStringArray("target") instance=ExtResource("3_ttnp6")]
 transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 30, 0)
 script = ExtResource("7_h20bx")
-speed = 5.0
 target = NodePath("../Vessel")
 
 [node name="debug" type="Label" parent="PositionLockCamera"]
@@ -103,3 +112,20 @@ visible = false
 offset_right = 40.0
 offset_bottom = 23.0
 script = ExtResource("3_4fllx")
+
+
+[node name="AutoScrollCamera" parent="." node_paths=PackedStringArray("target") instance=ExtResource("3_ttnp6")]
+transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 30, 0)
+script = ExtResource("8_bdwnq")
+top_left = Vector2(-5, 5)
+bottom_right = Vector2(5, -5)
+autoscroll_speed = Vector3(5, 0, 0)
+target = NodePath("../Vessel")
+
+[node name="debug" type="Label" parent="AutoScrollCamera"]
+visible = false
+offset_right = 40.0
+offset_bottom = 23.0
+script = ExtResource("3_4fllx")
+
+

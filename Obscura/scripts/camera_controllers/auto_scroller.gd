@@ -47,7 +47,6 @@ func _process(delta: float) -> void:
 	if tpos.z > top_left.y - target.HEIGHT / 2.0:
 		tpos.z = top_left.y - target.HEIGHT / 2.0
 
-	# Update the vessel's position
 	target.global_position = tpos
 
 

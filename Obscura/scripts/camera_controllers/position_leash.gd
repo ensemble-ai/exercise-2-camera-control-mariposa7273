@@ -5,7 +5,6 @@ extends CameraControllerBase
 @export var follow_speed: float = 30.0
 @export var catchup_speed: float = 70.0
 @export var leash_distance: float = 10.0
-var target_velocity: Vector3 = Vector3.ZERO
 var box_width:float = 10.0
 var box_height:float = 10.0
 

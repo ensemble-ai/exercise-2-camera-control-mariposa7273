@@ -11,7 +11,7 @@ func _ready():
 			camera.current = false
 	if(len(cameras) > current_controller+1):
 		cameras[current_controller].make_current()
-
+ 
 
 func _process(_delta):
 	
@@ -24,10 +24,7 @@ func _process(_delta):
 			if null != cameras[index]:
 				if index == current_controller:
 					cameras[current_controller].make_current()
-<<<<<<< Updated upstream
-=======
 					cameras[current_controller].draw_camera_logic = true
->>>>>>> Stashed changes
 				else:
 					cameras[index].current = false
 					cameras[index].draw_camera_logic = false

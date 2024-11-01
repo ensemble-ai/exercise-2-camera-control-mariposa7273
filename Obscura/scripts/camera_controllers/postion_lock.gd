@@ -2,6 +2,8 @@ class_name PositionLock
 extends CameraControllerBase
 
 var speed: float = 5.0 
+@export var box_width:float = 10.0
+@export var box_height:float = 10.0
 var velocity: Vector3 = Vector3.ZERO
 
 func _ready() -> void:

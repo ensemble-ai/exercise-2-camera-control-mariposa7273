@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://88du8yjefx8j"]
+[gd_scene load_steps=15 format=4 uid="uid://88du8yjefx8j"]
 
 [ext_resource type="PackedScene" uid="uid://dtm13sp1jsrwi" path="res://scenes/vessel.tscn" id="1_oaql3"]
 [ext_resource type="Script" path="res://scripts/camera_selector.gd" id="2_qffo5"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/camera_controllers/auto_scroller.gd" id="8_tesxh"]
 [ext_resource type="Script" path="res://scripts/camera_controllers/position_leash.gd" id="9_f0asu"]
 [ext_resource type="Script" path="res://scripts/camera_controllers/target_focus.gd" id="10_ikacm"]
+[ext_resource type="Script" path="res://scripts/camera_controllers/speed_up_push.gd" id="11_tt133"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_ifdot"]
 _surfaces = [{
@@ -45,7 +46,7 @@ terrain_manager = NodePath("../TerrainManager")
 
 [node name="CameraSelector" type="Node" parent="." node_paths=PackedStringArray("cameras")]
 script = ExtResource("2_qffo5")
-cameras = [NodePath("../PushBoxCamera"), NodePath("../PositionLockCamera"), NodePath("../AutoScrollerCamera"), NodePath("../PositionLeashCamera"), NodePath("../TargetFocusCamera")]
+cameras = [NodePath("../PushBoxCamera"), NodePath("../PositionLockCamera"), NodePath("../AutoScrollerCamera"), NodePath("../PositionLeashCamera"), NodePath("../TargetFocusCamera"), NodePath("../SpeedUpPushCamera")]
 
 [node name="PushBoxCamera" parent="." node_paths=PackedStringArray("target") instance=ExtResource("3_ttnp6")]
 transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 30, 0)
@@ -146,6 +147,22 @@ leash_distance = 10.0
 target = NodePath("../Vessel")
 
 [node name="debug" type="Label" parent="TargetFocusCamera"]
+visible = false
+offset_right = 40.0
+offset_bottom = 23.0
+script = ExtResource("3_4fllx")
+
+[node name="SpeedUpPushCamera" parent="." node_paths=PackedStringArray("target") instance=ExtResource("3_ttnp6")]
+transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 30, 0)
+script = ExtResource("11_tt133")
+push_ratio = 1.0
+pushbox_top_left = Vector2(-10, 10)
+pushbox_bottom_right = Vector2(10, -10)
+speedup_zone_top_left = Vector2(-5, 5)
+speedup_zone_bottom_right = Vector2(5, -5)
+target = NodePath("../Vessel")
+
+[node name="debug" type="Label" parent="SpeedUpPushCamera"]
 visible = false
 offset_right = 40.0
 offset_bottom = 23.0

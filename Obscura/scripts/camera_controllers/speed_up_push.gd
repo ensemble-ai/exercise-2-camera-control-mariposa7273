@@ -1,16 +1,16 @@
-class_name AutoScroller
+class_name SpeedUpPush
 extends CameraControllerBase
 
-@export var box_width:float = 10.0
-@export var box_height:float = 10.0
-@export var top_left: Vector2 = Vector2(-5,5)
-@export var bottom_right: Vector2 = Vector2(5,-5)
-@export var autoscroll_speed:Vector3 = Vector3(5, 0, 0)
-
+@export var push_ratio: float = 1.0
+@export var pushbox_top_left : Vector2 = Vector2(-10,10)
+@export var pushbox_bottom_right: Vector2 = Vector2(10,-10)
+@export var speedup_zone_top_left: Vector2 = Vector2(-5,5)
+@export var speedup_zone_bottom_right:Vector2 = Vector2(5,-5)
+var box_width:float = 20.0
+var box_height:float = 20.0
 
 func _ready() -> void:
 	super()
-	draw_camera_logic = true
 	global_position = Vector3(target.global_position.x, global_position.y, target.global_position.z)
 
 
@@ -18,41 +18,15 @@ func _process(delta: float) -> void:
 	if !current:
 		return
 
-# toggle doesn't work if I dont recheck it within each camera for some reason
+	# toggle doesn't work if I dont recheck it within each camera for some reason
 	if Input.is_action_just_pressed("fire1"):
 		draw_camera_logic = !draw_camera_logic
 
 	if draw_camera_logic:
 		draw_logic()
 
-# updates the camera position according to the autoscroll speed
-	global_position += autoscroll_speed * delta
-
-	#updates the box coordinates as the camera moves
-	top_left = Vector2(global_position.x - box_width / 2, global_position.z + box_height / 2)
-	bottom_right = Vector2(global_position.x + box_width / 2, global_position.z - box_height / 2)
-
 	var tpos = target.global_position 
-
-	# check if box is touching left wall
-	if tpos.x < top_left.x + target.WIDTH / 2.0:
-		tpos.x = top_left.x + target.WIDTH / 2.0
-
-	# check if box is touching right wall
-	if tpos.x > bottom_right.x - target.WIDTH / 2.0:
-		tpos.x = bottom_right.x - target.WIDTH / 2.0
 	
-	# check if box is touching bottom wall
-	if tpos.z < bottom_right.y + target.HEIGHT / 2.0:
-		tpos.z = bottom_right.y + target.HEIGHT / 2.0
-
-	# check if box is touching top wall
-	if tpos.z > top_left.y - target.HEIGHT / 2.0:
-		tpos.z = top_left.y - target.HEIGHT / 2.0
-
-	#adjusts the target so it stays in the box
-	target.global_position = tpos
-
 
 func draw_logic() -> void:
 	var mesh_instance := MeshInstance3D.new()

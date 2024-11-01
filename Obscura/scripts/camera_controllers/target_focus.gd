@@ -7,13 +7,11 @@ extends CameraControllerBase
 @export var leash_distance: float = 10.0
 var catchup_timer: float = 0.0  
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	super()
 	global_position = Vector3(target.global_position.x, global_position.y, target.global_position.z)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if !current:
 		return
@@ -25,20 +23,26 @@ func _process(delta: float) -> void:
 	if draw_camera_logic:
 		draw_logic()
 
+	# sets up target position, distance to target and the lead distance
 	var tpos = Vector3(target.global_position.x, global_position.y, target.global_position.z)
 	var distance = global_position.distance_to(tpos)
 	var lead_pos = tpos + (target.velocity.normalized() * leash_distance)
 	
+	# if the target is moving we want the camera to be in front of it
 	if target.velocity.length() > 0:
 		global_position = global_position.move_toward(lead_pos, lead_speed * delta)
+		# the target is moving so no need to start catchup timer
 		catchup_timer = 0.0
 	else:
+		# makes sure the delay is done before the camera moves to the target
 		if catchup_timer < catchup_delay_duration:
 			catchup_timer += delta
 		else:
+			# moves to the target using the catch up speed once timer is over
 			global_position = global_position.move_toward(tpos, catchup_speed * delta)
 
 	if distance > leash_distance:
+		# if the target breaks leash distance the camera catches up with it
 		global_position = global_position.move_toward(tpos, catchup_speed * delta)
 
 func draw_logic():

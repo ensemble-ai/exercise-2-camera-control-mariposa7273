@@ -16,6 +16,7 @@ func _process(delta: float) -> void:
 	if draw_camera_logic:
 		draw_logic()
 
+	# gets the postion of the target and makes it the camera postition and adds in target velocity
 	global_position = Vector3(target.global_position.x, global_position.y, target.global_position.z)
 	global_position += target.velocity * delta
 

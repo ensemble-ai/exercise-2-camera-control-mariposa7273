@@ -20,14 +20,18 @@ func _process(delta: float) -> void:
 	if draw_camera_logic:
 		draw_logic()
 
+	# starter variable for target location and distance
 	var tpos = Vector3(target.global_position.x, global_position.y, target.global_position.z)
 	var distance = global_position.distance_to(tpos)
 	
 	if distance > leash_distance:
+		# if out of leash distance move towards target using catcup speed
 		global_position = global_position.move_toward(tpos, catchup_speed * delta)
 	else:
+		# a check to stop stuttering if target is close enough to camera center and not moving
 		if distance < 1 and target.velocity.length() == 0:
 			global_position = tpos
+		# moves the camera according to the directionm the target is going and follow speed
 		var direction = (tpos - global_position).normalized()
 		global_position += direction * follow_speed * delta
 

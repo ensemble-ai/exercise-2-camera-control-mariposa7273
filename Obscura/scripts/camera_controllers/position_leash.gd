@@ -1,10 +1,13 @@
-class_name PositionLock
+class_name PositionLeash
 extends CameraControllerBase
 
-var speed: float = 5.0 
+
+@export var follow_speed: float = 30.0
+@export var catchup_speed: float = 70.0
+@export var leash_distance: float = 10.0
+var target_velocity: Vector3 = Vector3.ZERO
 var box_width:float = 10.0
 var box_height:float = 10.0
-var velocity: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
 	super()
@@ -13,6 +16,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if !current:
 		return
+
 	# toggle doesn't work if I dont recheck it within each camera for some reason
 	if Input.is_action_just_pressed("fire1"):
 		draw_camera_logic = !draw_camera_logic
@@ -20,13 +24,17 @@ func _process(delta: float) -> void:
 	if draw_camera_logic:
 		draw_logic()
 
-	global_position = Vector3(target.global_position.x, global_position.y, target.global_position.z)
-
-	velocity.x = target.velocity.x * speed
-	velocity.z = target.velocity.z * speed
-
-	global_position += velocity * delta
+	var tpos = Vector3(target.global_position.x, global_position.y, target.global_position.z)
+	var distance = global_position.distance_to(tpos)
 	
+	if distance > leash_distance:
+		global_position = global_position.move_toward(tpos, catchup_speed * delta)
+	else:
+		if distance < 1 and target.velocity.length() == 0:
+			global_position = tpos
+		var direction = (tpos - global_position).normalized()
+		global_position += direction * follow_speed * delta
+
 
 
 func draw_logic():

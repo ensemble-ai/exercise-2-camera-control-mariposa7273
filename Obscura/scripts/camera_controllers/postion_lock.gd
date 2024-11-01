@@ -1,9 +1,6 @@
 class_name PositionLock
 extends CameraControllerBase
 
-var speed: float = 5.0 
-var velocity: Vector3 = Vector3.ZERO
-
 func _ready() -> void:
 	super()
 
@@ -20,11 +17,7 @@ func _process(delta: float) -> void:
 		draw_logic()
 
 	global_position = Vector3(target.global_position.x, global_position.y, target.global_position.z)
-
-	velocity.x = target.velocity.x * speed
-	velocity.z = target.velocity.z * speed
-
-	global_position += velocity * delta
+	global_position += target.velocity * delta
 
 
 func draw_logic():
